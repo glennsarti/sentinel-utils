@@ -1,0 +1,48 @@
+-- a_override.hcl --
+# Force a lint error
+policy "policy1" {}
+
+-- b_override.hcl --
+# Force a lint error
+policy "policy1" {}
+
+-- sentinel.hcl --
+// module doc
+import "module" "utilitie1s" {
+  source = "./modules/module.sentinel"
+}
+// static import doc
+import "static" "utilities2" {
+  source = "./modules/util2.json"
+  format = "json"
+}
+// policy1 doc
+policy "policy1" {
+  source = "./policies/policy1/policy1.sentinel"
+}
+# Force a lint error
+param "policy1" {
+  value = "bar"
+}
+
+-- modules/module.sentinel --
+# Empty Sentinel module
+
+-- policies/policy1/policy1.sentinel --
+x = 1
+main = rule { 1 == 2 }
+# Force a lint error
+x = 2
+
+-- policies/policy1/test/policy1/pass.hcl --
+# Empty Test File
+
+-- policies/policy1/test/policy1/fail.hcl --
+# Empty Test File
+-- diagOut.txt --
+Path:/a_override.hcl Issue: [1:0-1:16] (Lint/UselessOverride) Block has no effect
+Path:/b_override.hcl Issue: [1:0-1:16] (Lint/UselessOverride) Block has no effect
+Path:/policies/policy1/policy1.sentinel Issue: [3:0-3:1] (Lint/AssignmentsAfterRules) Avoid assignment after rules
+Path:/policies/policy1/test/policy1/fail.hcl No issues found
+Path:/policies/policy1/test/policy1/pass.hcl No issues found
+Path:/sentinel.hcl Issue: [10:0-10:16] (Lint/DuplicateName) Block uses a duplicate name

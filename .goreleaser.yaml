@@ -1,0 +1,38 @@
+version: 2
+builds:
+  -
+    id: "sentinel-utils"
+
+    main: ./cli
+
+    binary: "{{.ProjectName}}_{{.Os}}_{{.Arch}}"
+
+    env:
+      - CGO_ENABLED=0
+
+    goos:
+      - darwin
+      - linux
+      - windows
+
+    goarch:
+      - amd64
+      - arm64
+
+    goarm:
+      - 7
+
+    # List of combinations of GOOS + GOARCH + GOARM to ignore.
+    ignore:
+      - goos: linux
+        goarch: arm
+        goarm: 7
+
+release:
+  github:
+    owner: "glennsarti"
+    name: "sentinel-utils"
+
+  draft: true
+  replace_existing_draft: true
+  use_existing_draft: true
