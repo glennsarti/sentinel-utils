@@ -1,0 +1,6 @@
+-- sentinel.hcl --
+
+invalid_block foo bar { }
+
+-- diagOut.txt --
+Path:/sentinel.hcl Issue: [1:0-1:13] (Syntax/Error) Unsupported block type

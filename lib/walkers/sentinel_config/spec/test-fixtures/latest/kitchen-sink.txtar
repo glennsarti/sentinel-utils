@@ -1,0 +1,45 @@
+-- a_override.hcl --
+# Empty override file
+-- b_override.hcl --
+# Empty override file
+-- sentinel.hcl --
+// module doc
+import "module" "utilitie1s" {
+  source = "./modules/module.sentinel"
+}
+
+// static import doc
+import "static" "utilities2" {
+  source = "./modules/util2.json"
+  format = "json"
+}
+
+// policy1 doc
+policy "policy1" {
+  source = "./policies/policy1/policy1.sentinel"
+}
+
+// policy2 doc
+policy "policy2" {
+  source = "./policies/policy2/policy2.sentinel"
+}
+-- modules/module.sentinel --
+# Empty Sentinel module
+-- policies/policy1/policy1.sentinel --
+# Empty Policy File
+-- policies/policy1/test/policy1/pass.hcl --
+# Empty Test File
+-- policies/policy1/test/policy1/fail.hcl --
+# Empty Test File
+-- policies/policy2/policy2.sentinel --
+# Empty Policy File
+-- walker.txt --
+Path:/sentinel.hcl FileType:primary
+Path:/a_override.hcl FileType:override
+Path:/b_override.hcl FileType:override
+Path:/modules/module.sentinel FileType:module
+Path:/policies/policy1/policy1.sentinel FileType:policy
+Path:/policies/policy1/test/policy1/fail.hcl FileType:test
+Path:/policies/policy1/test/policy1/pass.hcl FileType:test
+Path:/policies/policy2/policy2.sentinel FileType:policy
+-- diagOut.txt --
