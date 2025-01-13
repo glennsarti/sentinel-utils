@@ -5,8 +5,8 @@ github.com/apparentlymart/go-textseg/v15 v15.0.0/go.mod h1:K8XmNZdhEBkdlyDdvbmms
 github.com/cpuguy83/go-md2man/v2 v2.0.4/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/glennsarti/sentinel-lint v0.0.3-0.20241226104443-4a4df50680b3 h1:46LSZkj2HUjKn9LtnOl+ejoA00VRlYMv7oIGSsAZpK4=
-github.com/glennsarti/sentinel-lint v0.0.3-0.20241226104443-4a4df50680b3/go.mod h1:RykLGzpMLVX1VhWFFiBZkLYtBa8zpzrYol3eQvHhp44=
+github.com/glennsarti/sentinel-lint v0.0.3 h1:Xto381HthT5mK0EmmEc4RYL75ONzvhLFEC+wxtHraUU=
+github.com/glennsarti/sentinel-lint v0.0.3/go.mod h1:RykLGzpMLVX1VhWFFiBZkLYtBa8zpzrYol3eQvHhp44=
 github.com/glennsarti/sentinel-parser v0.0.1 h1:Cp+nlMdRBYkA69AFEJE6vaQtYF4G3sFkcMtvSIs2Cew=
 github.com/glennsarti/sentinel-parser v0.0.1/go.mod h1:iX/Zj7XdDtmTvCamK9Tr0nP21Aqn4jOqYkt3k7VBXng=
 github.com/go-test/deep v1.0.3 h1:ZrJSEWsXzPOxaZnFteGEfooLba+ju3FYIbOrS+rQd68=

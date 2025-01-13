@@ -3,7 +3,7 @@ module github.com/glennsarti/sentinel-utils
 go 1.22.5
 
 require (
-	github.com/glennsarti/sentinel-lint v0.0.3-0.20241226104443-4a4df50680b3
+	github.com/glennsarti/sentinel-lint v0.0.3
 	github.com/glennsarti/sentinel-parser v0.0.1
 	github.com/google/go-cmp v0.6.0
 	github.com/spf13/cobra v1.8.1
