@@ -1,0 +1,21 @@
+-- sentinel.hcl --
+policy "pass1" {
+  source = "./policies/pass/pass.sentinel"
+  enforcement_level = "advisory"
+}
+
+policy "fail" {
+  source = "./policies/fail/fail.sentinel"
+  enforcement_level = "advisory"
+}
+
+policy "pass2" {
+  source = "./policies/pass/pass.sentinel"
+  enforcement_level = "advisory"
+}
+
+-- policies/pass/pass.sentinel --
+# Empty policy file
+-- diagOut.txt --
+Path:/policies/pass/pass.sentinel No issues found
+Path:/sentinel.hcl Issue: [6:2-6:42] (FileSystem/Error) File does not exist

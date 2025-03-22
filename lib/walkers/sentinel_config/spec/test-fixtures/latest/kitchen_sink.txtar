@@ -34,12 +34,12 @@ policy "policy2" {
 -- policies/policy2/policy2.sentinel --
 # Empty Policy File
 -- walker.txt --
-Path:/sentinel.hcl FileType:primary
-Path:/a_override.hcl FileType:override
-Path:/b_override.hcl FileType:override
-Path:/modules/module.sentinel FileType:module
-Path:/policies/policy1/policy1.sentinel FileType:policy
-Path:/policies/policy1/test/policy1/fail.hcl FileType:test
-Path:/policies/policy1/test/policy1/pass.hcl FileType:test
-Path:/policies/policy2/policy2.sentinel FileType:policy
+Path:/sentinel.hcl FileType:primary From:nil
+Path:/a_override.hcl FileType:override From:nil
+Path:/b_override.hcl FileType:override From:nil
+Path:/modules/module.sentinel FileType:module From:/sentinel.hcl (2:2->2:38)
+Path:/policies/policy1/policy1.sentinel FileType:policy From:/sentinel.hcl (13:2->13:48)
+Path:/policies/policy1/test/policy1/fail.hcl FileType:test From:/sentinel.hcl (12:7->12:16)
+Path:/policies/policy1/test/policy1/pass.hcl FileType:test From:/sentinel.hcl (12:7->12:16)
+Path:/policies/policy2/policy2.sentinel FileType:policy From:/sentinel.hcl (18:2->18:48)
 -- diagOut.txt --

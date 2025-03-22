@@ -12,10 +12,11 @@ import (
 	"github.com/glennsarti/sentinel-utils/lib/internal/helpers"
 	"github.com/glennsarti/sentinel-utils/lib/parsing"
 
+	"github.com/glennsarti/sentinel-parser/position"
 	"github.com/glennsarti/sentinel-parser/sentinel_config/ast"
 )
 
-type Visitor func(file *filesystem.File) (bool, error)
+type Visitor func(*filesystem.File, *position.SourceRange) (bool, error)
 
 type Walker interface {
 	Walk(visitor Visitor) error
@@ -78,7 +79,7 @@ func (dw *sentinelConfigWalker) Walk(visitor Visitor) error {
 
 	// Order is important.
 	// First visit the root file
-	if cont, err := visitor(rootFile); err != nil || !cont {
+	if cont, err := visitor(rootFile, nil); err != nil || !cont {
 		return err
 	}
 
@@ -159,14 +160,17 @@ func (dw *sentinelConfigWalker) visitOverrideFiles(rootFile *filesystem.File, vi
 			Name: item.Name(),
 			Type: filetypes.ConfigOverrideFileType,
 		}
-		if cont, err := visitor(override); err != nil || !cont {
+		if cont, err := visitor(override, nil); err != nil || !cont {
 			return err
 		}
 	}
 	return nil
 }
 
-func (dw *sentinelConfigWalker) recurseRootConfig(rootFile *filesystem.File, sentinelVersion string, visitor Visitor) error {
+func (dw *sentinelConfigWalker) recurseRootConfig(rootFile *filesystem.File,
+	sentinelVersion string,
+	visitor Visitor,
+) error {
 	cfg, diags, err := dw.parsing.ParseSentinelConfigFile(rootFile, sentinelVersion)
 	if err != nil {
 		return err
@@ -190,18 +194,21 @@ func (dw *sentinelConfigWalker) recurseRootConfig(rootFile *filesystem.File, sen
 		}
 
 		modSource := ""
+		var modSourceRange *position.SourceRange = nil
 		switch actual := imp.(type) {
 		case *ast.V1ModuleImport:
 			modSource = actual.Source
+			modSourceRange = actual.SourceRange
 		case *ast.V2ModuleImport:
 			modSource = actual.Source
+			modSourceRange = actual.SourceRange
 		}
 		if strings.HasPrefix(modSource, "./") {
 			_, cont, err := dw.visitFilePath(&filesystem.File{
 				Path: dw.fsys.PathJoin(parentDir, modSource[2:]),
 				Type: filetypes.ModuleFileType,
 				ID:   nodeDocumentID(imp),
-			}, visitor)
+			}, modSourceRange, visitor)
 
 			if err != nil && !errors.Is(err, fs.ErrNotExist) {
 				return err
@@ -226,7 +233,7 @@ func (dw *sentinelConfigWalker) recurseRootConfig(rootFile *filesystem.File, sen
 				Path: policyPath,
 				Type: filetypes.PolicyFileType,
 				ID:   nodeDocumentID(pol),
-			}, visitor)
+			}, pol.SourceRange, visitor)
 			if err != nil {
 				return err
 			}
@@ -234,7 +241,7 @@ func (dw *sentinelConfigWalker) recurseRootConfig(rootFile *filesystem.File, sen
 				return nil
 			}
 
-			if err := dw.findPolicyTests(pol.Name, policyFile, visitor); err != nil {
+			if err := dw.findPolicyTests(pol, policyFile, visitor); err != nil {
 				return err
 			}
 		}
@@ -243,21 +250,21 @@ func (dw *sentinelConfigWalker) recurseRootConfig(rootFile *filesystem.File, sen
 	return nil
 }
 
-func (dw *sentinelConfigWalker) visitFilePath(file *filesystem.File, visitor Visitor) (*filesystem.File, bool, error) {
-	if i, err := fs.Stat(dw.fsys, file.Path); err != nil {
-		return file, false, err
-	} else {
-		file.Name = fs.FileInfoToDirEntry(i).Name()
-		cont, err := visitor(file)
-		return file, cont, err
-	}
+func (dw *sentinelConfigWalker) visitFilePath(
+	file *filesystem.File,
+	visitFrom *position.SourceRange,
+	visitor Visitor,
+) (*filesystem.File, bool, error) {
+	file.Name = dw.fsys.BasePath(file.Path)
+	cont, err := visitor(file, visitFrom)
+	return file, cont, err
 }
 
-func (dw *sentinelConfigWalker) findPolicyTests(policyName string, policyFile *filesystem.File, visitor Visitor) error {
+func (dw *sentinelConfigWalker) findPolicyTests(policy *ast.Policy, policyFile *filesystem.File, visitor Visitor) error {
 	// Get the parent dir of the policyPath
 	parent := dw.fsys.ParentPath(policyFile.Path)
 	// See if <parent>/test/<policy name>/ dir exists
-	testPath := dw.fsys.PathJoin(parent, "test", policyName)
+	testPath := dw.fsys.PathJoin(parent, "test", policy.Name)
 	if _, err := fs.Stat(dw.fsys, testPath); err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			return nil
@@ -280,7 +287,7 @@ func (dw *sentinelConfigWalker) findPolicyTests(policyName string, policyFile *f
 					Path: testFilePath,
 					Name: entry.Name(),
 					Type: filetypes.ConfigTestFileType,
-				}); err != nil {
+				}, policy.NameRange); err != nil {
 					return err
 				} else if !cont {
 					return nil

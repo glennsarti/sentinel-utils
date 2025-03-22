@@ -8,10 +8,10 @@ import (
 	"github.com/glennsarti/sentinel-utils/lib/filesystem"
 )
 
-func NewOSFileSystem(root string) filesystem.FS {
+func NewOSFileSystem(root string) (filesystem.FS, error) {
 	return &osFileSystem{
 		FS: os.DirFS(root),
-	}
+	}, nil
 }
 
 type osFileSystem struct {
@@ -36,4 +36,8 @@ func (d osFileSystem) PathJoin(elem ...string) string {
 
 func (d osFileSystem) ParentPath(item string) string {
 	return filepath.Dir(item)
+}
+
+func (d osFileSystem) BasePath(item string) string {
+	return filepath.Base(item)
 }

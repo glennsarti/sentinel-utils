@@ -1,0 +1,18 @@
+-- sentinel.hcl --
+
+import "module" "found" {
+  source = "./modules/found.sentinel"
+}
+
+import "module" "not_fs_module" {
+  source = "modules/module.sentinel"
+}
+
+import "module" "missing" {
+  source = "./modules/missing.sentinel"
+}
+
+-- modules/found.sentinel --
+# Empty Sentinel module
+-- diagOut.txt --
+Path:/sentinel.hcl Issue: [10:2-10:39] (FileSystem/Error) File does not exist

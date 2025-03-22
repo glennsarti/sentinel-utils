@@ -39,7 +39,7 @@ func Lint(walker cwalker.Walker, pf parsing.Factory, yielder LintIssueYielder) e
 		return true, nil
 	}
 
-	lw := newLintWalker(walker, pf)
+	lw := newLintWalker(walker, yielder, pf)
 	err := lw.Walk(visitor)
 
 	return err

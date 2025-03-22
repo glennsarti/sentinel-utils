@@ -7,6 +7,7 @@ import (
 	slint "github.com/glennsarti/sentinel-lint/lint"
 	"github.com/glennsarti/sentinel-parser/diagnostics"
 	"github.com/glennsarti/sentinel-parser/filetypes"
+	"github.com/glennsarti/sentinel-parser/position"
 	"github.com/glennsarti/sentinel-utils/lib/filesystem"
 	"github.com/glennsarti/sentinel-utils/lib/parsing"
 
@@ -23,10 +24,11 @@ type lintFileSystemWalker interface {
 	Root() string
 }
 
-func newLintWalker(w cwalker.Walker, pf parsing.Factory) lintFileSystemWalker {
+func newLintWalker(w cwalker.Walker, iy LintIssueYielder, pf parsing.Factory) lintFileSystemWalker {
 	return &lintWalker{
 		rootWalker:   w,
 		parseFactory: pf,
+		issueYielder: iy,
 	}
 }
 
@@ -37,14 +39,15 @@ type lintWalker struct {
 	primaryFile     *filesystem.File
 	primaryLintFile *slint.ConfigPrimaryFile
 	primaryIssues   slint.Issues
+	issueYielder    LintIssueYielder
 }
 
 func (w *lintWalker) Walk(visitor lintFileVisitor) error {
 	w.visitedPrimary = false
 	w.primaryLintFile = nil
 
-	err := w.rootWalker.Walk(func(file *filesystem.File) (bool, error) {
-		return w.visit(file, visitor)
+	err := w.rootWalker.Walk(func(file *filesystem.File, p *position.SourceRange) (bool, error) {
+		return w.visit(file, visitor, p)
 	})
 
 	if err != nil {
@@ -69,7 +72,16 @@ func (w *lintWalker) Root() string {
 	return w.rootWalker.Root()
 }
 
-func (w *lintWalker) visit(file *filesystem.File, visitor lintFileVisitor) (bool, error) {
+func (w *lintWalker) visit(file *filesystem.File, visitor lintFileVisitor, from *position.SourceRange) (bool, error) {
+	if _, err := fs.Stat(w.FileSystem(), file.Path); err != nil {
+		if from != nil && from.Filename != "" {
+			w.issueYielder(newUnknownFile(from.Filename), slint.Issues{
+				newFileNotExistIssue(file.Path, from),
+			})
+		}
+		return true, nil
+	}
+
 	if file.Content == nil {
 		// Read it
 		content, err := fs.ReadFile(w.FileSystem(), file.Path)
