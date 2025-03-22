@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/glennsarti/sentinel-parser/position"
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/glennsarti/sentinel-utils/lib/filesystem"
@@ -68,31 +69,43 @@ func testSpecFile(filename, parentPath, sentinelVersion string, t *testing.T) er
 	}
 
 	visited := make([]string, 0)
-	err = w.Walk(func(file *filesystem.File) (bool, error) {
-		visited = append(visited, inspectFile(file))
-		//panic("SPEC")
 
-		return true, nil
-	})
+	err = w.Walk(
+		func(file *filesystem.File, p *position.SourceRange) (bool, error) {
+			visited = append(visited, inspectFile(file, p))
+			return true, nil
+		},
+	)
 	if err != nil {
 		return err
 	}
 
-	expectedString := string(arc.WalkerFile.Data)
-	actualString := strings.Join(visited, "\n") + "\n"
-	if diff := cmp.Diff(expectedString, actualString); diff != "" {
-		t.Fatal(diff)
-	}
-
-	// if arc.PrimaryFile.Name == "" {
-	// 	return fmt.Errorf("Missing input file in archive %s", filePath)
-	// }
-
-	//t.Fatal("FORCE ERROR")
+	t.Run("walked-files", func(t *testing.T) {
+		expectedString := string(arc.WalkerFile.Data)
+		actualString := strings.Join(visited, "\n") + "\n"
+		if diff := cmp.Diff(expectedString, actualString); diff != "" {
+			t.Fatal(diff)
+		}
+	})
 
 	return nil
 }
 
-func inspectFile(file *filesystem.File) string {
-	return fmt.Sprintf("Path:%s FileType:%s", file.Path, file.Type)
+func inspectFile(file *filesystem.File, from *position.SourceRange) string {
+	msg := fmt.Sprintf("Path:%s FileType:%s From:", file.Path, file.Type)
+
+	if from == nil {
+		return msg + "nil"
+	}
+
+	msg = msg + fmt.Sprintf("%s (%d:%d->%d:%d)",
+		from.Filename,
+		from.Start.Line,
+		from.Start.Column,
+		from.End.Line,
+		from.End.Column,
+	)
+	return msg
 }
+
+//fmt.Sprintf("%s From:%s (%d:%d)", inspectFile(file), from.Filename)

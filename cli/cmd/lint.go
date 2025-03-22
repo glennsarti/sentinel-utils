@@ -34,7 +34,11 @@ var lintCmd = &cobra.Command{
 			}
 			rootPath = wd
 		}
-		fsys := defaultfs.NewOSFileSystem(rootPath)
+		fsys, err := defaultfs.NewOSFileSystem(rootPath)
+		if err != nil {
+			cmdUi.Error(fmt.Sprintf("Failed to open file system: %s", err))
+			os.Exit(1)
+		}
 		if _, err := fsys.Stat(rootPath); err != nil {
 			if errors.Is(err, fs.ErrNotExist) {
 				cmdUi.Error(fmt.Sprintf("The path %s does not exist", rootPath))
@@ -61,7 +65,7 @@ var lintCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		err := linting.Lint(walker, pf, func(lintFile slint.File, issues slint.Issues) {
+		err = linting.Lint(walker, pf, func(lintFile slint.File, issues slint.Issues) {
 			cmdUi.OutputLintIssues(lintFile, issues, fsys)
 			if len(issues) > 0 {
 				exitCode = 1

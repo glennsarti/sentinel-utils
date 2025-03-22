@@ -12,8 +12,21 @@ type FS interface {
 	fs.ReadFileFS
 	fs.StatFS
 
+	// Joins any number of path elements into a single path,
+	// separating them with a filesystem specific separator
 	PathJoin(...string) string
+
+	// Returns all but the last element of path, typically the path's directory.
+	// Trailing slashes are removed.
+	// If the path is empty, ParentPath returns ".".
+	// If the path consists entirely of separators, ParentPath returns a single separator.
 	ParentPath(string) string
+
+	// BasePath returns the last element of path.
+	// Trailing path separators are removed before extracting the last element.
+	// If the path is empty, BasePath returns ".".
+	// If the path consists entirely of separators, BasePath returns a single separator.
+	BasePath(string) string
 }
 
 type File struct {

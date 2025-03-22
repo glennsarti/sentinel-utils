@@ -1,0 +1,25 @@
+-- sentinel.hcl --
+
+policy "pass1" {
+  source = "./policies/pass/pass.sentinel"
+  enforcement_level = "advisory"
+}
+
+policy "fail" {
+  source = "./policies/fail/fail.sentinel"
+  enforcement_level = "advisory"
+}
+
+policy "pass2" {
+  source = "./policies/pass/pass.sentinel"
+  enforcement_level = "advisory"
+}
+
+-- policies/pass/pass.sentinel --
+# Empty policy file
+-- walker.txt --
+Path:/sentinel.hcl FileType:primary From:nil
+Path:/policies/fail/fail.sentinel FileType:policy From:/sentinel.hcl (7:2->7:42)
+Path:/policies/pass/pass.sentinel FileType:policy From:/sentinel.hcl (2:2->2:42)
+Path:/policies/pass/pass.sentinel FileType:policy From:/sentinel.hcl (12:2->12:42)
+-- diagOut.txt --
