@@ -99,10 +99,10 @@ func (w *lintWalker) visit(file *filesystem.File, visitor lintFileVisitor) (bool
 
 	if file.Type == filetypes.ConfigOverrideFileType {
 		if w.primaryLintFile == nil || w.primaryLintFile.ResolvedConfigFile == nil {
-			return false, fmt.Errorf("The override file %q has no primary file to override", file.Path)
+			return false, fmt.Errorf("the override file %q has no primary file to override", file.Path)
 		}
 		if w.visitedPrimary {
-			return false, fmt.Errorf("The override file %q is in the wrong directory.", file.Path)
+			return false, fmt.Errorf("the override file %q is in the wrong directory", file.Path)
 		}
 
 		cfg, d, err := w.parseFactory.ParseSentinelConfigFile(file, w.rootWalker.SentinelVersion())
@@ -173,7 +173,7 @@ func (w *lintWalker) visit(file *filesystem.File, visitor lintFileVisitor) (bool
 		}, diagsToIssues(d))
 
 	default:
-		return true, fmt.Errorf("Unknown file %q", file.Path)
+		return true, fmt.Errorf("unknown file %q", file.Path)
 	}
 }
 

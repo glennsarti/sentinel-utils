@@ -19,13 +19,13 @@ func parseTxtarArchive(filePath string) (*parsedArchive, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck
 
 	contents, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}
-	f.Close()
+	f.Close() //nolint:errcheck
 
 	arc := &parsedArchive{}
 	arc.raw = txtar.Parse(contents)
