@@ -14,18 +14,12 @@ func (svc *service) Initialize(ctx context.Context, params lsp.InitializeParams)
 			TextDocumentSync: lsp.TextDocumentSyncOptions{
 				OpenClose: true,
 				Change:    lsp.Full,
-				Save: &lsp.SaveOptions{
+				Save: lsp.SaveOptions{
 					IncludeText: false,
 				},
 			},
-			DefinitionProvider:         nil,
-			ReferencesProvider:         nil,
-			HoverProvider:              nil,
-			DocumentFormattingProvider: nil,
-			DocumentSymbolProvider:     nil,
-			WorkspaceSymbolProvider:    nil,
-			Workspace: &lsp.WorkspaceOptions{
-				WorkspaceFolders: &lsp.WorkspaceFolders5Gn{
+			Workspace: &lsp.Workspace6Gn{
+				WorkspaceFolders: lsp.WorkspaceFolders5Gn{
 					Supported: false,
 				},
 			},

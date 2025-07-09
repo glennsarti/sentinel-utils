@@ -1,12 +1,11 @@
 var http = require('https');
 var fs = require("fs");
 var path = require("path");
-//var cp = require("child_process");
 
 console.log(`Running ${__filename}`)
 
-const goplsRef = "gopls/v0.19.1";
-const goplsRootUrl = "https://raw.githubusercontent.com/golang/tools/" + goplsRef + "/gopls/internal/protocol/";
+const goplsRef = "gopls/v0.11.0";
+const goplsRootUrl = "https://raw.githubusercontent.com/golang/tools/" + goplsRef + "/gopls/internal/lsp/protocol/";
 
 const scriptDir = __dirname;
 const root = path.join(scriptDir, "..");
@@ -61,11 +60,6 @@ async function getProtocolFiles() {
 
   content = await getUrlAsPromise(goplsRootUrl + "tsprotocol.go");
   outFile = path.join(outDir, "generated_protocol.go");
-  console.log(`Writing ${outFile}...`);
-  fs.writeFileSync(outFile, content.body, { encoding: "utf8" });
-
-  content = await getUrlAsPromise(goplsRootUrl + "uri.go");
-  outFile = path.join(outDir, "generated_uri.go");
   console.log(`Writing ${outFile}...`);
   fs.writeFileSync(outFile, content.body, { encoding: "utf8" });
 };

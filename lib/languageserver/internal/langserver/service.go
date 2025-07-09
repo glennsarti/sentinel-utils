@@ -23,36 +23,10 @@ import (
 	lintImpl "github.com/glennsarti/sentinel-utils/lib/languageserver/internal/queues/lint"
 )
 
-// import (
-// 	"context"
-// 	"errors"
-// 	"fmt"
-// 	"log"
-
-// 	jserver "github.com/creachadair/jrpc2/server"
-
-// 	"github.com/creachadair/jrpc2"
-// 	"github.com/creachadair/jrpc2/code"
-// 	rpch "github.com/creachadair/jrpc2/handler"
-
-// 	lsctx "github.com/glennsarti/vscode-sentinel/lsp/internal/context"
-// 	"github.com/glennsarti/vscode-sentinel/lsp/internal/filesystem"
-// 	"github.com/glennsarti/vscode-sentinel/lsp/internal/langserver/notifiers"
-// 	"github.com/glennsarti/vscode-sentinel/lsp/internal/langserver/session"
-// 	ilsp "github.com/glennsarti/vscode-sentinel/lsp/internal/lsp"
-// 	lsp "github.com/glennsarti/vscode-sentinel/lsp/internal/protocol"
-// 	"github.com/glennsarti/vscode-sentinel/lsp/internal/settings"
-// 	"github.com/glennsarti/vscode-sentinel/lsp/internal/telemetry"
-// 	"github.com/hashicorp/hcl-lang/decoder"
-// 	"github.com/hashicorp/hcl-lang/lang"
-// )
-
 func NewService(logger *log.Logger, ctx context.Context) jserver.Service {
-	//srvCtx, stopService := context.WithCancel(ctx)
 	srv := service{
 		logger: logger,
 		srvCtx: ctx,
-		//stopService: stopService,
 	}
 	return &srv
 }
@@ -138,6 +112,7 @@ func (svc *service) Assigner() (jrpc2.Assigner, error) {
 	m := rpch.Map{
 		"initialize": func(ctx context.Context, req *jrpc2.Request) (any, error) {
 			ctx = ictx.WithClientCapabilities(ctx, clientSession.ClientCapabilities)
+
 			return handle(ctx, req, svc.Initialize)
 		},
 		"initialized": func(ctx context.Context, req *jrpc2.Request) (any, error) {
@@ -177,18 +152,6 @@ func (svc *service) Assigner() (jrpc2.Assigner, error) {
 		},
 		"textDocument/didSave": func(ctx context.Context, req *jrpc2.Request) (interface{}, error) {
 			return nil, nil
-		},
-
-		// Unfortunately the ServerCapabilities serialization doesn't turn these off. So for now
-		// Just ignore them and return a noop respsonse
-		"textDocument/codeLens": func(ctx context.Context, req *jrpc2.Request) (any, error) {
-			return make([]lsp.CodeLens, 0), nil
-		},
-		"textDocument/documentLink": func(ctx context.Context, req *jrpc2.Request) (any, error) {
-			return make([]lsp.DocumentLink, 0), nil
-		},
-		"textDocument/completion": func(ctx context.Context, req *jrpc2.Request) (any, error) {
-			return make([]lsp.CompletionItem, 0), nil
 		},
 
 		"$/setTrace": func(ctx context.Context, req *jrpc2.Request) (any, error) {
@@ -231,7 +194,9 @@ func (svc *service) Finish(_ jrpc2.Assigner, status jrpc2.ServerStatus) {
 
 func (svc *service) shutdown() {
 	svc.srvCtx.Done()
-	svc.lintQueue.Stop()
+	if svc.lintQueue != nil {
+		svc.lintQueue.Stop()
+	}
 }
 
 func handle(ctx context.Context, req *jrpc2.Request, fn any) (any, error) {
