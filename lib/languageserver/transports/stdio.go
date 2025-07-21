@@ -38,7 +38,7 @@ var _ server.Accepter = &stdioAccepter{}
 
 func (sa *stdioAccepter) Accept(ctx context.Context) (channel.Channel, error) {
 	if sa.stdioCh == nil {
-		sa.stdioCh = channel.Line(os.Stdin, os.Stdout)
+		sa.stdioCh = channel.LSP(os.Stdin, os.Stdout)
 		return sa.stdioCh, nil
 	}
 
