@@ -1,0 +1,21 @@
+-- sentinel.hcl --
+
+import "module" "found" {
+  source = "./modules/found.sentinel"
+}
+
+import "module" "not_fs_module" {
+  source = "modules/module.sentinel"
+}
+
+import "module" "missing" {
+  source = "./modules/missing.sentinel"
+}
+
+-- modules/found.sentinel --
+# Empty Sentinel module
+-- walker.txt --
+Path:/sentinel.hcl FileType:primary From:nil
+Path:/modules/found.sentinel FileType:module From:/sentinel.hcl (2:2->2:37)
+Path:/modules/missing.sentinel FileType:module From:/sentinel.hcl (10:2->10:39)
+-- diagOut.txt --

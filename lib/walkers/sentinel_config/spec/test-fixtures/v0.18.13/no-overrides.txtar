@@ -5,5 +5,5 @@
 -- sentinel.hcl --
 # Empty configuration
 -- walker.txt --
-Path:/sentinel.hcl FileType:primary
+Path:/sentinel.hcl FileType:primary From:nil
 -- diagOut.txt --

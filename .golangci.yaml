@@ -1,0 +1,6 @@
+version: "2"
+linters:
+  exclusions:
+    paths:
+      - lib/languageserver/internal/protocol/generated_protocol_document_changes.go
+      - lib/languageserver/internal/protocol/generated_protocol.go

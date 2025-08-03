@@ -165,6 +165,10 @@ func (d *txtarFileSystem) PathJoin(elem ...string) string {
 	return path.Join(elem...)
 }
 
+func (d *txtarFileSystem) BasePath(item string) string {
+	return path.Base(item)
+}
+
 func (d *txtarFileSystem) ParentPath(item string) string {
 	return path.Dir(item)
 }
