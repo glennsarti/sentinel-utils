@@ -4,7 +4,7 @@ go 1.25
 
 require (
 	github.com/creachadair/jrpc2 v1.3.4
-	github.com/glennsarti/sentinel-lint v0.0.3
+	github.com/glennsarti/sentinel-lint v0.0.4
 	github.com/glennsarti/sentinel-parser v0.0.3
 	github.com/google/go-cmp v0.7.0
 	github.com/spf13/cobra v1.10.2
