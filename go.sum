@@ -9,8 +9,8 @@ github.com/creachadair/mds v0.25.13 h1:PsSUHV6zsfPd29k4kvm1rMoee1YFia7JyNGeMPmDc
 github.com/creachadair/mds v0.25.13/go.mod h1:4hatI3hRM+qhzuAmqPRFvaBM8mONkS7nsLxkcuTYUIs=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/glennsarti/sentinel-lint v0.0.3 h1:Xto381HthT5mK0EmmEc4RYL75ONzvhLFEC+wxtHraUU=
-github.com/glennsarti/sentinel-lint v0.0.3/go.mod h1:RykLGzpMLVX1VhWFFiBZkLYtBa8zpzrYol3eQvHhp44=
+github.com/glennsarti/sentinel-lint v0.0.4 h1:vkMhjXVWaSxb0MukCbXoU71J3+PkepI5eVpzQqmzVo8=
+github.com/glennsarti/sentinel-lint v0.0.4/go.mod h1:aFtVZjCFLoc62a12O1XGmp+oF+hEzYEB4UV5TSKhZJM=
 github.com/glennsarti/sentinel-parser v0.0.3 h1:aqIIUNn3ICBNaIOxTUNrOOUNUof/KmY9AQSZW5jqrx0=
 github.com/glennsarti/sentinel-parser v0.0.3/go.mod h1:7WOUHoQ+aywZAPeFyvmsQ8E/VhjEOqW/YzGSK+Q2xso=
 github.com/go-test/deep v1.0.3 h1:ZrJSEWsXzPOxaZnFteGEfooLba+ju3FYIbOrS+rQd68=
